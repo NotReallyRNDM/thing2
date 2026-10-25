@@ -1,9 +1,16 @@
+#
+'''
+git add bot2.py
+git commit -m "describe what you changed"
+git push
 
-
+'''
+#
 
 import os
 import discord
 import asyncio
+import random
 from dotenv import load_dotenv
 from discord.ext import tasks
 from datetime import date, datetime, timedelta
@@ -32,6 +39,7 @@ async def send_reminder(channel, user, minutes, text, entry):
 async def on_ready():
     print(f"Logged in as {client.user}")
 
+counting = False
 
 
 @client.event
@@ -43,7 +51,7 @@ async def on_message(message):
     if client.user in message.mentions:
         await message.channel.send(f"Hey {message.author.mention}, you pinged me!")
 
-    
+     
     if message.content == "h":
         await message.channel.send("<@1022723519462776892>")
 
@@ -95,6 +103,22 @@ async def on_message(message):
     elif message.content == "idk why amI asing a bot":
         await message.channel.send("you dumb")
 
+
+    elif message.content == "go cry":
+        await message.channel.send("I hate you too dim sum dumdum")
+
+    elif message.content == "67":
+        await message.channel.send("67 in the big 26😭")
+
+    elif message.content == "rat":
+        await message.channel.send(
+            random.choice(["olivia?","john smith","not a fan"])
+        )
+
+    elif message.content == "yay":
+        await message.channel.send("yay-ER BEAT THAT LURKLITE")
+
+
     elif message.content == "ily":
         await message.channel.send("ew.....    I sure don't love that person")
 
@@ -107,6 +131,16 @@ async def on_message(message):
     elif message.content == "gmm":
         await message.channel.send("go away")
 
+    elif message.author.id == 776947006237179934:
+        await message.channel.send("-# meow")   
+
+
+
+    elif message.content == "aww":
+        await message.channel.send("computer analysis deems this is the best possible move as it sets up for the greatest follow up play of decagonal. nigel made no bingoes but his game was utterly genius an amazing understanding of board dynamics and endgame stratergy are unmatched. This game between Joey Mallick and Nigel Richards definitely stands out as one of the most impressive games of scrabble history.")
+
+    elif message.content == "don't spam":
+        await message.channel.send("spam")
 
 
 
@@ -140,7 +174,7 @@ async def on_message(message):
     elif message.content.startswith("alarm "):
         parts = message.content.split(" ", 2)
         if len(parts) < 3 or not parts[1].isdigit():
-            await message.channel.send("bad syntax try 'alarm 60 pika' in minutes")
+            await message.channel.send("bad syntax try 'alarm 60 message' in minutes")
         else:
             minutes = int(parts[1])
             text = parts[2]
@@ -149,7 +183,7 @@ async def on_message(message):
             pending.append(entry)
             await message.channel.send(f"alarm in {minutes} minutes")
             asyncio.create_task(
-                send.reminder(message.channel, message.author, minutes, text, entry)
+                send_reminder(message.channel, message.author, minutes, text, entry)
             )            
 
 
@@ -166,42 +200,104 @@ async def on_message(message):
 
 
 
+    elif message.content.startswith("userinfo"):
+        if message.mentions:
+         user = message.mentions[0]
 
-    elif message.content == "":
-        await message.channel.send("")
 
-    elif message.content == "":
-        await message.channel.send("")
+        await message.channel.send(
+            f"**User Info**\n"
+            f"Username: {user.name}\n"
+            f"Display name: {user.display_name}\n"
+            f"User ID: {user.id}\n"
+            f"Bot account: {user.bot}\n"
+            f"Account created: {user.created_at.strftime('%d/%m/%Y')}\n"
+            f"Avatar: {user.display_avatar.url}\n"
+            f"Nick: {user.nick}\n"
+        )
+            
 
-    elif message.content == "":
-        await message.channel.send("")
 
-    elif message.content == "":
-        await message.channel.send("")
 
-    elif message.content == "":
-        await message.channel.send("")
 
-    elif message.content == "":
-        await message.channel.send("")
+    elif message.content.startswith ("roles"):
+        if message.mentions:
+            user = message.mentions[0]
 
-    elif message.content == "":
-        await message.channel.send("")
+            roles = [role.name for role in user.roles
+                    if role.name != "@everyone"]
 
-    elif message.content == "":
-        await message.channel.send("")
+            if roles:
+                await message.channel.send(
+                    f"{user.display_name}'s roles:d\n"
+                    + "\n".join(roles)
+                )
+            else:
+                await message.channel.send(f"{user.display_name} has no roles"
+                )
+                
+        else:
+                await message.channel.send(
+                    "do roles @someone"
+                )
+    
 
-    elif message.content == "":
-        await message.channel.send("")
+    elif message.content.startswith("do"):
+        maths = message.content.split(" ", 1)[1]
 
-    elif message.content == "":
-        await message.channel.send("")
+        try:
+            ans = eval(maths)     
 
-    elif message.content == "":
-        await message.channel.send("")
 
-    elif message.content == "":
-        await message.channel.send("")
+
+            response = random.choice([
+                "stop asking, it's",
+                "urlgh I just woke up :I maths now?? it's",
+                "",
+                "nahh~~ \n \n \n \n \n jk it's ",
+                "it's not not not not not not",
+                "ok geez, rude~~ it's"
+            ])
+
+            await message.channel.send(f"{response} {ans}")
+
+        except maths:
+            await message.channel.send("error")
+
+
+
+
+        
+
+    elif message.content == "dice":
+        A =  random.randint(1, 6)
+        await message.channel.send(A)
+
+    elif message.content.startswith("roll "):
+        C = int(message.content.split(" ")[1])
+        B = random.randint(1, C)
+        await message.channel.send(B)
+
+
+    global counting
+
+    if message.content == "break":
+        counting = False
+        await message.channel.send("counting has stopped")
+
+    elif message.content.startswith("count to "):
+        E = int(message.content.split(" ")[2])
+        counting = True
+    
+
+        for F in range(1, E + 1):
+            if not counting:
+                break
+
+            await message.channel.send(F)
+
+
+
 
 client.run(os.getenv("DISCORD_TOKEN"))
 
