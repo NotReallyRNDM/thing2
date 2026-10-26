@@ -11,10 +11,13 @@ import os
 import discord
 import asyncio
 import random
+import io
+from PIL import Image, ImageDraw, ImageFont
+from discord import app_commands
 from dotenv import load_dotenv
 from discord.ext import tasks
 from datetime import date, datetime, timedelta
-now = datetime.now()
+
 
 
 
@@ -26,6 +29,7 @@ load_dotenv("discordtoken.env")
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 
 pending = []
 async def send_reminder(channel, user, minutes, text, entry):
@@ -37,10 +41,11 @@ async def send_reminder(channel, user, minutes, text, entry):
 
 @client.event 
 async def on_ready():
+    await tree.sync()
     print(f"Logged in as {client.user}")
 
 counting = False
-
+counting2 = False
 
 @client.event
 async def on_message(message):
@@ -48,9 +53,11 @@ async def on_message(message):
         return
 
 
+
+#Random message reactions of messages from message writing people 
+
     if client.user in message.mentions:
         await message.channel.send(f"Hey {message.author.mention}, you pinged me!")
-
      
     if message.content == "h":
         await message.channel.send("<@1022723519462776892>")
@@ -103,7 +110,6 @@ async def on_message(message):
     elif message.content == "idk why amI asing a bot":
         await message.channel.send("you dumb")
 
-
     elif message.content == "go cry":
         await message.channel.send("I hate you too dim sum dumdum")
 
@@ -111,22 +117,13 @@ async def on_message(message):
         await message.channel.send("67 in the big 26😭")
 
     elif message.content == "rat":
-        await message.channel.send(
-            random.choice(["olivia?","john smith","not a fan"])
-        )
+        await message.channel.send(random.choice(["olivia?","john smith","not a fan"]))
 
     elif message.content == "yay":
         await message.channel.send("yay-ER BEAT THAT LURKLITE")
 
-
     elif message.content == "ily":
-        await message.channel.send("ew.....    I sure don't love that person")
-
-    elif message.content == "time":
-        await message.channel.send(now.strftime("%I:%M %p"))
-        await message.channel.send(now.strftime("%Y-%m-%d %H:%M:%S"))
-        await message.channel.send(now.strftime("%A, %d %B %Y"))
-
+        await message.channel.send("ew.....    \nI sure don't love that person")
 
     elif message.content == "gmm":
         await message.channel.send("go away")
@@ -134,19 +131,34 @@ async def on_message(message):
     elif message.author.id == 776947006237179934:
         await message.channel.send("-# meow")   
 
-
-
     elif message.content == "aww":
         await message.channel.send("computer analysis deems this is the best possible move as it sets up for the greatest follow up play of decagonal. nigel made no bingoes but his game was utterly genius an amazing understanding of board dynamics and endgame stratergy are unmatched. This game between Joey Mallick and Nigel Richards definitely stands out as one of the most impressive games of scrabble history.")
 
     elif message.content == "don't spam":
         await message.channel.send("spam")
 
+    elif message.content == "shut up":
+        await message.channel.send("how 'bout you shut up :I")
+
+    elif message.content == "dte":
+        await message.channel.send("stakeholder commented on the potential difficulty one might have in installing the filament hinge due to high friction between the hinges and the curve of the filament itself. This comment led to my adding of a fillet to every face on one side of the hinge such that the filament would guide itself into the hole. The same stakehoder commented on when after the tracks were assembled the same stakeholder expressesd that the tracks' hinge ends need to be hidden to look good. It's current state of an overhaning and bent filament, the stakeholder fonund to be unacceptable")   
+
+    elif message.content == "":
+        await message.channel.send("")
 
 
 
 
 
+
+
+#Date and time stuff
+
+    elif message.content == "now":
+        now = datetime.now()
+        await message.channel.send(now.strftime("%I:%M %p"))
+        await message.channel.send(now.strftime("%Y-%m-%d %H:%M:%S"))
+        await message.channel.send(now.strftime("%A, %d %B %Y"))
 
     elif message.content == "time":
         await message.channel.send(datetime.now().strftime("%H:%M:%S"))
@@ -169,7 +181,7 @@ async def on_message(message):
 
 
 
-
+#Kinda useless but was like kinda fun  time counting magic import thingy
 
     elif message.content.startswith("alarm "):
         parts = message.content.split(" ", 2)
@@ -198,7 +210,7 @@ async def on_message(message):
 
 
 
-
+#Hehe other people's discord account public info and avatar pic as a square!
 
     elif message.content.startswith("userinfo"):
         if message.mentions:
@@ -212,13 +224,10 @@ async def on_message(message):
             f"User ID: {user.id}\n"
             f"Bot account: {user.bot}\n"
             f"Account created: {user.created_at.strftime('%d/%m/%Y')}\n"
-            f"Avatar: {user.display_avatar.url}\n"
+            f"Profile picture: {user.display_avatar.url}\n"
             f"Nick: {user.nick}\n"
         )
-            
-
-
-
+        
 
     elif message.content.startswith ("roles"):
         if message.mentions:
@@ -229,18 +238,17 @@ async def on_message(message):
 
             if roles:
                 await message.channel.send(
-                    f"{user.display_name}'s roles:d\n"
-                    + "\n".join(roles)
+                    f"{user.display_name}'s roles:d\n"+ "\n".join(roles)
                 )
             else:
-                await message.channel.send(f"{user.display_name} has no roles"
-                )
+                await message.channel.send(f"{user.display_name} has no roles")
                 
         else:
-                await message.channel.send(
-                    "do roles @someone"
-                )
-    
+                await message.channel.send("do roles @someone" )
+
+
+
+#MATHS WITH AN S HAHAHAHHAHAHAH Learning python hurts.
 
     elif message.content.startswith("do"):
         maths = message.content.split(" ", 1)[1]
@@ -267,7 +275,7 @@ async def on_message(message):
 
 
 
-        
+#DICE?? GAMBILGING HEHEHEHE NO. Yay random stuff that's like simpler than I thought    
 
     elif message.content == "dice":
         A =  random.randint(1, 6)
@@ -278,6 +286,8 @@ async def on_message(message):
         B = random.randint(1, C)
         await message.channel.send(B)
 
+
+#bascially spam icl
 
     global counting
 
@@ -297,40 +307,199 @@ async def on_message(message):
             await message.channel.send(F)
 
 
+    global counting2
+
+    if message.content == "break":
+        counting2 = False
+        await message.channel.send("counting has stopped")
+
+    elif message.content.startswith("count from "):
+        G = int(message.content.split(" ")[2])
+        counting2 = True
+    
+
+        for G in range(G, 0, -1):
+            if not counting2:
+                break
+
+            await message.channel.send(G)
+
+
+
+
+
+
+
+#woah so that's how they do /commands
+
+@tree.command(name="hello", description="Make bot say hello")
+async def hello(interaction: discord.Interaction):
+    await interaction.response.send_message(f"hi<@{interaction.user.id}>")
+
+
+
+
+
+
+
+@tree.command(name="cat", description="Make bot say meow")
+async def hello(interaction: discord.Interaction):
+    await interaction.response.send_message("meow~~\n \n just like <@776947006237179934>")
+
+    
+
+
+
+
+
+
+
+
+@tree.command(name="countdown", description="Count down from a number")
+async def countdown(interaction: discord.Interaction, number: int):
+    
+    await interaction.response.send_message(
+        f"Counting down from {number}..."
+    )
+
+    for i in range(number, 0, -1):
+        await interaction.followup.send(str(i))
+        await asyncio.sleep(0.2)
+
+
+
+
+
+
+
+
+
+
+
+###
+#yg
+#
+#yay 
+#actually cool gif thing better than thingy thing on googley doohley do
+
+
+@tree.command(
+    name = "gifmaker",
+    description = "make into a gif")
+
+@app_commands.describe(
+    frame1="first png",
+    frame2="second png",
+    duration="ms per frame 30-2000 | leave blank is 600ms",
+    top_text="text on image top",
+    bottom_text="text on image bottom",
+    coloura="hex a | leave blank is 255",
+    colourb="hex b | leave blank is 255",
+    colourc="hex c | leave blank is 255",
+    size2="font size (60 is good | leave blank is 60)",
+    background2="thickness of text background | leave blank = 30"
+
+)
+
+async def gifmaker(
+    interaction: discord.Interaction, 
+    frame1: discord.Attachment,
+    frame2: discord.Attachment,
+    duration: app_commands.Range[int, 30, 2000] = 600,
+    top_text: str = "",
+    bottom_text: str = "",
+    coloura: app_commands.Range[int, 0, 255] = 255,
+    colourb: app_commands.Range[int, 0, 255] = 255,
+    colourc: app_commands.Range[int, 0, 255] = 255,
+    size2: app_commands.Range[int, 1, 400] = 60,
+    background2: app_commands.Range[int, 1, 500] = 30
+):
+    await interaction.response.defer()
+
+    try:
+        frames = []
+
+        for attachment in (frame1, frame2):
+            data = await attachment.read()
+
+            with Image.open(io.BytesIO(data)) as image:
+                frames.append(image.convert("RGBA").copy())
+
+
+        width, height = frames[0].size
+
+        frames = [
+            image.resize((width, height)) 
+            for image in frames]
+
+        try:
+            font = ImageFont.truetype(
+                "C:/Windows/Fonts/arial.ttf", size2 #rip linux
+            )
+        except OSError:
+            font = ImageFont.load_default()
+
+        for image in frames:
+            draw = ImageDraw.Draw(image)
+
+            width, height = image.size
+
+            if top_text:
+                draw.text(
+                    (width //2, 40),
+                    top_text,
+                    font=font,
+                    fill=(coloura, colourb, colourc),
+                    stroke_width=background2,
+                    stroke_fill=(0,0,0),
+                    anchor="mt"
+                )
+
+            if bottom_text:
+                draw.text(
+                    (width //2, height -40),
+                    bottom_text,
+                    font=font,
+                    fill=(coloura, colourb, colourc),
+                    stroke_width=background2,
+                    stroke_fill=(0,0,0),
+                    anchor="mb"
+                )
+
+
+
+#tp
+        gif_frames = [
+            image.convert("P", palette=Image.Palette.ADAPTIVE)
+            for image in frames
+
+        ]
+
+
+
+        output = io.BytesIO()
+
+        gif_frames[0].save(
+            output, 
+            format="gif",
+            save_all=True,
+            append_images=gif_frames[1:],
+            duration=duration,
+            loop=0,
+            disposal=2
+
+        )
+
+        output.seek(0)
+
+        await interaction.followup.send(
+            file=discord.File(output, filename="wowitsa.gif")
+        )
+
+    except Exception as error:
+        await interaction.followup.send("error")
+
+    
 
 
 client.run(os.getenv("DISCORD_TOKEN"))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
