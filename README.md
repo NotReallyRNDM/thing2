@@ -12,6 +12,8 @@ Rest of it messing around with people.
 
 key words, phrases that triggers bot
 
+How to use~
+type and of these keywords in chat to trigger a response
 
 h, angry, william, yea mb, excuse me??,  igb, meow, um, umm, ummm hi, no stupid, gm, gn, "not you, bot", celina, idk why amI asing a bot, ily, time, gmm, date, since dd-mm-yyyy(put in actual numbers), alarm (number of minutes) (note), reminders, go cry, 67, dice, roll, do (maths operation like 5*2), roles (@user), userinfo(@user), count to (number), count from (number) break [stops counting], shut up, /hello, /gifmaker
 
